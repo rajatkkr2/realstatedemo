@@ -18,6 +18,7 @@ import {
 import PropertyCard from "@/components/PropertyCard";
 import GlassCard from "@/components/GlassCard";
 import NeonButton from "@/components/NeonButton";
+import CityScapeAnimation from "@/components/CityScapeAnimation";
 import { usePropertyStore } from "@/store/propertyStore";
 
 const stats = [
@@ -223,9 +224,12 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {/* Animated Cityscape — fields transforming to city */}
+        <CityScapeAnimation />
+
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 0.5 }}
