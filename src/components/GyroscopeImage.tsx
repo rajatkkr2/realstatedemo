@@ -2,7 +2,6 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 
 interface GyroscopeImageProps {
   src: string;
@@ -79,13 +78,14 @@ export default function GyroscopeImage({
         transition={{ type: "spring", stiffness: 150, damping: 15 }}
         style={{ transformStyle: "preserve-3d" }}
       >
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={src}
           alt={alt}
           width={width}
           height={height}
           className="h-full w-full object-cover"
-          unoptimized
+          loading="lazy"
         />
       </motion.div>
       <motion.div
