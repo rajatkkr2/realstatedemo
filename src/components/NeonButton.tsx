@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { isDemo } from "@/utils/isDemo";
 
 interface NeonButtonProps {
   children: React.ReactNode;
@@ -20,73 +19,65 @@ export default function NeonButton({
   variant = "cyan",
   size = "md",
   disabled = false,
-  disableInDemo = false,
   className = "",
   type = "button",
 }: NeonButtonProps) {
-  const isDisabled = disabled || (disableInDemo && isDemo);
-
   const sizes = {
-    sm: "px-4 py-1.5 text-xs",
-    md: "px-6 py-2.5 text-sm",
-    lg: "px-8 py-3.5 text-base",
+    sm: "px-5 py-2 text-xs",
+    md: "px-7 py-3 text-sm",
+    lg: "px-9 py-4 text-base",
   };
 
   const variants = {
     cyan: {
-      bg: "rgba(0,240,255,0.1)",
-      border: "rgba(0,240,255,0.4)",
-      text: "#00f0ff",
-      shadow: "0 0 20px rgba(0,240,255,0.3)",
-      hoverBg: "rgba(0,240,255,0.2)",
+      bg: "var(--royal-gold)",
+      text: "#FFFFFF",
+      hoverBg: "var(--royal-gold-dark)",
     },
     purple: {
-      bg: "rgba(180,0,255,0.1)",
-      border: "rgba(180,0,255,0.4)",
-      text: "#b400ff",
-      shadow: "0 0 20px rgba(180,0,255,0.3)",
-      hoverBg: "rgba(180,0,255,0.2)",
+      bg: "var(--navy)",
+      text: "#FFFFFF",
+      hoverBg: "var(--navy-light)",
     },
     pink: {
-      bg: "rgba(255,0,170,0.1)",
-      border: "rgba(255,0,170,0.4)",
-      text: "#ff00aa",
-      shadow: "0 0 20px rgba(255,0,170,0.3)",
-      hoverBg: "rgba(255,0,170,0.2)",
+      bg: "var(--accent-red)",
+      text: "#FFFFFF",
+      hoverBg: "#A93226",
     },
     ghost: {
       bg: "transparent",
-      border: "rgba(255,255,255,0.1)",
-      text: "#e0e0ff",
-      shadow: "none",
-      hoverBg: "rgba(255,255,255,0.05)",
+      text: "var(--navy)",
+      hoverBg: "var(--cream)",
     },
   };
 
   const v = variants[variant];
+  const isGhost = variant === "ghost";
 
   return (
     <motion.button
       type={type}
       onClick={onClick}
-      disabled={isDisabled}
-      whileHover={isDisabled ? {} : { scale: 1.05, boxShadow: v.shadow }}
-      whileTap={isDisabled ? {} : { scale: 0.95 }}
+      disabled={disabled}
+      whileHover={disabled ? {} : { y: -2 }}
+      whileTap={disabled ? {} : { scale: 0.97 }}
       className={`relative rounded-xl font-semibold tracking-wide transition-all duration-300 ${sizes[size]} ${className} ${
-        isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+        disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
       }`}
       style={{
         background: v.bg,
-        border: `1px solid ${v.border}`,
+        border: isGhost ? "1px solid var(--card-border)" : "none",
         color: v.text,
+        boxShadow: isGhost ? "none" : "0 2px 8px rgba(200,164,92,0.2)",
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled) (e.currentTarget as HTMLElement).style.background = v.hoverBg;
+      }}
+      onMouseLeave={(e) => {
+        if (!disabled) (e.currentTarget as HTMLElement).style.background = v.bg;
       }}
     >
       {children}
-      {isDisabled && disableInDemo && isDemo && (
-        <span className="absolute -top-1 -right-1 rounded-full bg-[var(--neon-cyan)] px-1.5 py-0.5 text-[8px] font-bold text-black">
-          DEMO
-        </span>
-      )}
     </motion.button>
   );
 }

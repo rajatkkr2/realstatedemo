@@ -8,25 +8,26 @@ export default function LoadingSpinner({ text = "Loading..." }: { text?: string 
       <div className="relative h-16 w-16">
         <motion.div
           className="absolute inset-0 rounded-full border-2 border-transparent"
-          style={{ borderTopColor: "var(--neon-cyan)", borderRightColor: "var(--neon-cyan)" }}
+          style={{ borderTopColor: "var(--royal-gold)", borderRightColor: "var(--royal-gold)" }}
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
           className="absolute inset-2 rounded-full border-2 border-transparent"
-          style={{ borderBottomColor: "var(--neon-purple)", borderLeftColor: "var(--neon-purple)" }}
+          style={{ borderBottomColor: "var(--accent-blue)", borderLeftColor: "var(--accent-blue)" }}
           animate={{ rotate: -360 }}
           transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
           className="absolute inset-4 rounded-full border-2 border-transparent"
-          style={{ borderTopColor: "var(--neon-pink)" }}
+          style={{ borderTopColor: "var(--royal-gold-light)" }}
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
         />
       </div>
       <motion.p
-        className="text-sm text-white/40 tracking-wider"
+        className="text-sm tracking-wider"
+        style={{ color: "var(--navy-muted)" }}
         animate={{ opacity: [0.4, 1, 0.4] }}
         transition={{ duration: 2, repeat: Infinity }}
       >

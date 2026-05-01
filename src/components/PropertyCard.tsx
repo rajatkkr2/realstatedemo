@@ -17,27 +17,29 @@ const formatPrice = (price: number) => {
   return `₹${price.toLocaleString("en-IN")}`;
 };
 
-const statusColors: Record<string, string> = {
-  Available: "var(--neon-green)",
-  Sold: "var(--neon-pink)",
-  Draft: "var(--neon-purple)",
+const statusColors: Record<string, { bg: string; text: string }> = {
+  Available: { bg: "rgba(46,125,91,0.1)", text: "var(--accent-green)" },
+  Sold: { bg: "rgba(192,57,43,0.1)", text: "var(--accent-red)" },
+  Draft: { bg: "rgba(74,74,106,0.1)", text: "var(--navy-muted)" },
 };
 
 export default function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const { wishlist, toggleWishlist } = usePropertyStore();
   const isWishlisted = wishlist.includes(property._id);
+  const sc = statusColors[property.status] || statusColors.Draft;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
+      transition={{ delay: index * 0.08, duration: 0.5 }}
       className="group relative overflow-hidden rounded-2xl"
       style={{
-        background: "var(--glass-bg)",
-        backdropFilter: "blur(20px)",
-        border: "1px solid var(--glass-border)",
+        background: "var(--card-bg)",
+        border: "1px solid var(--card-border)",
+        boxShadow: "var(--card-shadow)",
       }}
+      whileHover={{ y: -6, boxShadow: "0 12px 40px rgba(26,26,46,0.1)" }}
     >
       <Link href={`/properties/${property._id}`}>
         <div className="relative h-56 overflow-hidden">
@@ -45,29 +47,21 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
             src={property.images[0] || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"}
             alt={property.title}
             className="h-56 w-full"
-            intensity={10}
+            intensity={5}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050510] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
           <div className="absolute top-3 left-3 flex gap-2">
             <span
-              className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider"
-              style={{
-                background: `${statusColors[property.status]}15`,
-                color: statusColors[property.status],
-                border: `1px solid ${statusColors[property.status]}40`,
-              }}
+              className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider backdrop-blur-sm"
+              style={{ background: sc.bg, color: sc.text, border: `1px solid ${sc.text}30` }}
             >
               {property.status.toUpperCase()}
             </span>
             {property.featured && (
               <span
-                className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider"
-                style={{
-                  background: "rgba(0,240,255,0.15)",
-                  color: "var(--neon-cyan)",
-                  border: "1px solid rgba(0,240,255,0.3)",
-                }}
+                className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider backdrop-blur-sm"
+                style={{ background: "rgba(200,164,92,0.15)", color: "var(--royal-gold-dark)", border: "1px solid rgba(200,164,92,0.3)" }}
               >
                 FEATURED
               </span>
@@ -75,10 +69,8 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
           </div>
 
           <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-            <div>
-              <p className="text-xl font-bold neon-text-cyan">{formatPrice(property.price)}</p>
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-white/40">
+            <p className="text-xl font-bold text-white drop-shadow-md">{formatPrice(property.price)}</p>
+            <div className="flex items-center gap-1 text-[10px] text-white/70">
               <Eye size={12} />
               {property.views.toLocaleString()}
             </div>
@@ -88,16 +80,16 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
 
       <div className="p-4">
         <Link href={`/properties/${property._id}`}>
-          <h3 className="text-base font-semibold text-white/90 transition-colors group-hover:text-[var(--neon-cyan)] line-clamp-1">
+          <h3 className="text-base font-semibold transition-colors duration-200 line-clamp-1 group-hover:text-[var(--royal-gold-dark)]" style={{ color: "var(--navy)" }}>
             {property.title}
           </h3>
         </Link>
-        <div className="mt-1.5 flex items-center gap-1.5 text-xs text-white/40">
-          <MapPin size={12} />
+        <div className="mt-1.5 flex items-center gap-1.5 text-xs" style={{ color: "var(--navy-muted)" }}>
+          <MapPin size={12} style={{ color: "var(--royal-gold)" }} />
           {property.location}
         </div>
 
-        <div className="mt-3 flex items-center gap-4 text-xs text-white/50">
+        <div className="mt-3 flex items-center gap-4 text-xs" style={{ color: "var(--navy-muted)" }}>
           <span className="flex items-center gap-1">
             <BedDouble size={14} />
             {property.bhk} BHK
@@ -106,38 +98,36 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
             <Maximize size={14} />
             {property.sqft.toLocaleString()} sqft
           </span>
-          <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px]">{property.propertyType}</span>
+          <span className="rounded-full px-2 py-0.5 text-[10px]" style={{ background: "var(--cream)", color: "var(--navy-muted)" }}>{property.propertyType}</span>
         </div>
 
-        <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
+        <div className="mt-3 flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--card-border)" }}>
           <div className="flex flex-wrap gap-1">
             {property.amenities.slice(0, 2).map((a) => (
-              <span
-                key={a}
-                className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] text-white/40"
-              >
+              <span key={a} className="rounded-md px-2 py-0.5 text-[10px]" style={{ background: "var(--cream)", color: "var(--navy-muted)" }}>
                 {a}
               </span>
             ))}
             {property.amenities.length > 2 && (
-              <span className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] text-white/40">
+              <span className="rounded-md px-2 py-0.5 text-[10px]" style={{ background: "var(--cream)", color: "var(--navy-muted)" }}>
                 +{property.amenities.length - 2}
               </span>
             )}
           </div>
           <motion.button
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.8 }}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.85 }}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               toggleWishlist(property._id);
             }}
-            className="rounded-full p-2 transition-all hover:bg-white/5"
+            className="rounded-full p-2 transition-all hover:bg-red-50"
           >
             <Heart
               size={16}
-              className={isWishlisted ? "fill-[var(--neon-pink)] text-[var(--neon-pink)]" : "text-white/30"}
+              className={isWishlisted ? "fill-red-500 text-red-500" : ""}
+              style={isWishlisted ? {} : { color: "var(--navy-muted)" }}
             />
           </motion.button>
         </div>

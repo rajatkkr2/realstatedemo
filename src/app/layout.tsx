@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NEXUS Real Estate 2050 — Futuristic Property Platform",
-  description: "Experience the future of real estate. AI-powered property discovery, holographic tours, and smart living — all in one platform.",
+  title: "NEXUS Realty — Premium Real Estate",
+  description: "Discover premium properties across India. Elegant living spaces, smart search, and seamless property management.",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
         <ClientShell>{children}</ClientShell>
