@@ -3,8 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Bell, CheckCheck, Info, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { useUIStore } from "@/store/uiStore";
-import { mockNotifications } from "@/utils/mockData";
-import { useEffect } from "react";
 
 const typeIcons = {
   info: Info,
@@ -21,16 +19,7 @@ const typeColors = {
 };
 
 export default function NotificationPanel() {
-  const { notificationsOpen, toggleNotifications, notifications, markRead, markAllRead, addNotification } = useUIStore();
-
-  useEffect(() => {
-    if (notifications.length === 0) {
-      mockNotifications.forEach((n) => {
-        addNotification({ title: n.title, message: n.message, type: n.type });
-      });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { notificationsOpen, toggleNotifications, notifications, markRead, markAllRead } = useUIStore();
 
   return (
     <AnimatePresence>

@@ -23,8 +23,7 @@ import GlassCard from "@/components/GlassCard";
 import NeonButton from "@/components/NeonButton";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { usePropertyStore, Property } from "@/store/propertyStore";
-import { mockAgents } from "@/utils/mockData";
-import { isDemo } from "@/utils/isDemo";
+import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
 
 const formatPrice = (price: number) => {
@@ -38,8 +37,17 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
   const { properties, fetchProperties, wishlist, toggleWishlist } = usePropertyStore();
   const [property, setProperty] = useState<Property | null>(null);
   const [activeImage, setActiveImage] = useState(0);
+  const { user } = useAuthStore();
+  const [inquiryName, setInquiryName] = useState("");
+  const [inquiryEmail, setInquiryEmail] = useState("");
+  const [inquiryPhone, setInquiryPhone] = useState("");
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (user) { setInquiryName(user.name || ""); setInquiryEmail(user.email || ""); }
+  }, [user]);
 
   useEffect(() => {
     if (properties.length === 0) fetchProperties();
@@ -50,34 +58,29 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
     if (found) setProperty(found);
   }, [properties, id]);
 
-  const agent = mockAgents.find((a) => a._id === property?.agent) || mockAgents[0];
   const isWishlisted = property ? wishlist.includes(property._id) : false;
 
   const handleInquiry = async () => {
-    if (!inquiryMessage.trim()) return;
-    if (isDemo) {
-      await new Promise((r) => setTimeout(r, 800));
-      setInquirySent(true);
-      toast.success("Demo: Inquiry simulated successfully!");
-    } else {
-      try {
-        await fetch("/api/inquiries", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ propertyId: id, message: inquiryMessage }),
-        });
-        setInquirySent(true);
-        toast.success("Inquiry sent successfully!");
-      } catch {
-        toast.error("Failed to send inquiry");
-      }
+    if (!inquiryName.trim() || !inquiryEmail.trim() || !inquiryMessage.trim()) {
+      toast.error("Please fill in name, email, and message"); return;
     }
+    setSending(true);
+    try {
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId: id, propertyTitle: property?.title || "", userId: user?._id || "guest", userName: inquiryName, userEmail: inquiryEmail, userPhone: inquiryPhone, message: inquiryMessage }),
+      });
+      if (res.ok) { setInquirySent(true); toast.success("Inquiry sent successfully!"); }
+      else { const err = await res.json(); toast.error(err.error || "Failed to send inquiry"); }
+    } catch { toast.error("Failed to send inquiry"); }
+    setSending(false);
   };
 
   if (!property) return <LoadingSpinner text="Loading property data..." />;
 
   return (
-    <div className="min-h-screen px-4 pt-24 pb-12" style={{ marginTop: isDemo ? "36px" : "0" }}>
+    <div className="min-h-screen px-4 pt-24 pb-12">
       <div className="mx-auto max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Link
@@ -232,24 +235,21 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
             {/* Right Sidebar */}
             <div className="space-y-6">
               {/* Agent Card */}
-              <GlassCard className="p-6" glowColor="purple">
-                <h3 className="mb-4 text-sm font-semibold text-white/60">LISTING AGENT</h3>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--neon-cyan)] to-[var(--neon-purple)] text-lg font-bold text-black">
-                    {agent.name.charAt(0)}
+              {property.agentName && (
+                <GlassCard className="p-6" glowColor="purple">
+                  <h3 className="mb-4 text-sm font-semibold text-white/60">LISTED BY</h3>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--neon-cyan)] to-[var(--neon-purple)] text-lg font-bold text-black">
+                      {property.agentName.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-white">{property.agentName}</p>
+                      {property.contactEmail && <p className="text-xs text-white/40">{property.contactEmail}</p>}
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-white">{agent.name}</p>
-                    <p className="text-xs text-white/40">{agent.agency}</p>
-                  </div>
-                </div>
-                <div className="mb-4 flex items-center gap-4 text-xs text-white/40">
-                  <span>⭐ {agent.rating}</span>
-                  <span>{agent.totalListings} listings</span>
-                  {agent.verified && <span className="text-[var(--neon-green)]">✓ Verified</span>}
-                </div>
-                <p className="text-xs text-white/30 leading-relaxed">{agent.bio}</p>
-              </GlassCard>
+                  {property.contactPhone && <p className="text-xs text-white/30">Phone: {property.contactPhone}</p>}
+                </GlassCard>
+              )}
 
               {/* Inquiry Form */}
               <GlassCard className="p-6" glowColor="cyan">
@@ -258,23 +258,16 @@ export default function PropertyDetailPage({ params }: { params: Promise<{ id: s
                   <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
                     <CheckCircle size={40} className="mx-auto mb-3 text-[var(--neon-green)]" />
                     <p className="text-sm font-semibold text-white">Inquiry Sent!</p>
-                    <p className="mt-1 text-xs text-white/40">The agent will respond shortly.</p>
-                    {isDemo && <p className="mt-2 text-[10px] text-[var(--neon-cyan)]">Demo: Not actually sent</p>}
+                    <p className="mt-1 text-xs text-white/40">We will get back to you shortly.</p>
                   </motion.div>
                 ) : (
                   <div className="space-y-3">
-                    <textarea
-                      value={inquiryMessage}
-                      onChange={(e) => setInquiryMessage(e.target.value)}
-                      placeholder="Hi, I'm interested in this property..."
-                      rows={4}
-                      className="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none ring-1 ring-white/10 focus:ring-[var(--neon-cyan)]/30 resize-none"
-                    />
+                    <input value={inquiryName} onChange={(e) => setInquiryName(e.target.value)} placeholder="Your Name *" className="w-full rounded-xl bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none ring-1 ring-white/10 focus:ring-[var(--neon-cyan)]/30" />
+                    <input value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} placeholder="Your Email *" type="email" className="w-full rounded-xl bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none ring-1 ring-white/10 focus:ring-[var(--neon-cyan)]/30" />
+                    <input value={inquiryPhone} onChange={(e) => setInquiryPhone(e.target.value)} placeholder="Your Phone" type="tel" className="w-full rounded-xl bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/30 outline-none ring-1 ring-white/10 focus:ring-[var(--neon-cyan)]/30" />
+                    <textarea value={inquiryMessage} onChange={(e) => setInquiryMessage(e.target.value)} placeholder="Hi, I'm interested in this property... *" rows={4} className="w-full rounded-xl bg-white/5 px-4 py-3 text-sm text-white placeholder-white/30 outline-none ring-1 ring-white/10 focus:ring-[var(--neon-cyan)]/30 resize-none" />
                     <NeonButton onClick={handleInquiry} variant="cyan" className="w-full">
-                      <span className="flex items-center justify-center gap-2">
-                        <Send size={14} />
-                        Send Inquiry
-                      </span>
+                      <span className="flex items-center justify-center gap-2"><Send size={14} />{sending ? "Sending..." : "Send Inquiry"}</span>
                     </NeonButton>
                   </div>
                 )}

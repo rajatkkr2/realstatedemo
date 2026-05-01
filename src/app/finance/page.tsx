@@ -7,7 +7,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import GlassCard from "@/components/GlassCard";
 import NeonButton from "@/components/NeonButton";
 import { mockPriceTrends } from "@/utils/mockData";
-import { isDemo } from "@/utils/isDemo";
 
 const formatPrice = (price: number) => {
   if (price >= 10000000) return `₹${(price / 10000000).toFixed(2)} Cr`;
@@ -59,7 +58,7 @@ export default function FinancePage() {
   }, [loanAmount, rate, tenure, emi]);
 
   return (
-    <div className="min-h-screen px-4 pt-24 pb-12" style={{ marginTop: isDemo ? "36px" : "0" }}>
+    <div className="min-h-screen px-4 pt-24 pb-12">
       <div className="mx-auto max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-3 mb-2">

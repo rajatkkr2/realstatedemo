@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useUIStore } from "@/store/uiStore";
-import { isDemo } from "@/utils/isDemo";
 
 const navLinks = [
   { href: "/", label: "Home", icon: Home },
@@ -37,7 +36,6 @@ export default function Navbar() {
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 glass-strong"
-      style={{ marginTop: isDemo ? "36px" : "0" }}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">

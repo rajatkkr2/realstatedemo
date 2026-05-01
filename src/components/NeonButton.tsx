@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { isDemo } from "@/utils/isDemo";
 
 interface NeonButtonProps {
   children: React.ReactNode;
@@ -20,11 +19,10 @@ export default function NeonButton({
   variant = "cyan",
   size = "md",
   disabled = false,
-  disableInDemo = false,
   className = "",
   type = "button",
 }: NeonButtonProps) {
-  const isDisabled = disabled || (disableInDemo && isDemo);
+  const isDisabled = disabled;
 
   const sizes = {
     sm: "px-4 py-1.5 text-xs",
@@ -82,11 +80,6 @@ export default function NeonButton({
       }}
     >
       {children}
-      {isDisabled && disableInDemo && isDemo && (
-        <span className="absolute -top-1 -right-1 rounded-full bg-[var(--neon-cyan)] px-1.5 py-0.5 text-[8px] font-bold text-black">
-          DEMO
-        </span>
-      )}
     </motion.button>
   );
 }

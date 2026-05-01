@@ -1,31 +1,24 @@
 import { NextRequest } from "next/server";
-import { handleDemo } from "@/lib/demoHandler";
 import { connectDB } from "@/lib/db";
 import Property from "@/models/Property";
-import { mockProperties } from "@/utils/mockData";
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  return handleDemo(
-    async () => {
-      await connectDB();
-      const property = await Property.findById(id);
-      if (!property) {
-        return Response.json({ error: "Property not found" }, { status: 404 });
-      }
-      return Response.json(property);
-    },
-    async () => {
-      const property = mockProperties.find((p) => p._id === id);
-      if (!property) {
-        return Response.json({ error: "Property not found" }, { status: 404 });
-      }
-      return Response.json(property);
+  try {
+    await connectDB();
+    const property = await Property.findById(id);
+    if (!property) {
+      return Response.json({ error: "Property not found" }, { status: 404 });
     }
-  );
+    await Property.findByIdAndUpdate(id, { $inc: { views: 1 } });
+    return Response.json(property);
+  } catch (e) {
+    console.error("GET /api/properties/[id] error:", e);
+    return Response.json({ error: "Failed to fetch property" }, { status: 500 });
+  }
 }
 
 export async function PUT(
@@ -33,23 +26,18 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  return handleDemo(
-    async () => {
-      await connectDB();
-      const data = await req.json();
-      const property = await Property.findByIdAndUpdate(id, data, { new: true });
-      if (!property) {
-        return Response.json({ error: "Property not found" }, { status: 404 });
-      }
-      return Response.json(property);
-    },
-    async () => {
-      return Response.json({
-        _id: id,
-        message: "Demo mode: Property not updated",
-      });
+  try {
+    await connectDB();
+    const data = await req.json();
+    const property = await Property.findByIdAndUpdate(id, data, { new: true });
+    if (!property) {
+      return Response.json({ error: "Property not found" }, { status: 404 });
     }
-  );
+    return Response.json(property);
+  } catch (e) {
+    console.error("PUT /api/properties/[id] error:", e);
+    return Response.json({ error: "Failed to update property" }, { status: 500 });
+  }
 }
 
 export async function DELETE(
@@ -57,20 +45,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  return handleDemo(
-    async () => {
-      await connectDB();
-      const property = await Property.findByIdAndDelete(id);
-      if (!property) {
-        return Response.json({ error: "Property not found" }, { status: 404 });
-      }
-      return Response.json({ message: "Property deleted" });
-    },
-    async () => {
-      return Response.json({
-        _id: id,
-        message: "Demo mode: Property not deleted",
-      });
+  try {
+    await connectDB();
+    const property = await Property.findByIdAndDelete(id);
+    if (!property) {
+      return Response.json({ error: "Property not found" }, { status: 404 });
     }
-  );
+    return Response.json({ message: "Property deleted" });
+  } catch (e) {
+    console.error("DELETE /api/properties/[id] error:", e);
+    return Response.json({ error: "Failed to delete property" }, { status: 500 });
+  }
 }

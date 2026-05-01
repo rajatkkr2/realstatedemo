@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Bot, User } from "lucide-react";
 import { useUIStore } from "@/store/uiStore";
-import { mockChatMessages } from "@/utils/mockData";
 
 interface ChatMessage {
   id: string;
@@ -13,9 +12,37 @@ interface ChatMessage {
   timestamp: string;
 }
 
+const welcomeMsg: ChatMessage = {
+  id: "welcome",
+  sender: "bot",
+  text: "Hi! I'm the NEXUS assistant. I can help you find properties, answer questions about listings, or connect you with an agent. How can I help?",
+  timestamp: new Date().toISOString(),
+};
+
+function getBotResponse(input: string): string {
+  const q = input.toLowerCase();
+  if (q.includes("price") || q.includes("cost") || q.includes("budget"))
+    return "You can filter properties by price range using the search filters on our Properties page. We have options from ₹50L to ₹10+ Cr. Would you like me to help you narrow down?";
+  if (q.includes("location") || q.includes("city") || q.includes("where") || q.includes("area"))
+    return "We have listings across multiple cities and states. Use the search bar on the Properties page to filter by city, state, pincode, or area/locality.";
+  if (q.includes("contact") || q.includes("agent") || q.includes("call") || q.includes("phone"))
+    return "You can send an inquiry directly from any property detail page. Just click on a property and fill in the inquiry form — the admin will get back to you!";
+  if (q.includes("emi") || q.includes("loan") || q.includes("finance"))
+    return "Check out our Finance page for an EMI calculator and market price trends. It helps you estimate monthly payments based on property price, down payment, and interest rate.";
+  if (q.includes("register") || q.includes("sign up") || q.includes("account"))
+    return "You can create an account by clicking Register in the top menu. Choose between a regular User or Admin role during registration.";
+  if (q.includes("admin") || q.includes("add property") || q.includes("list property"))
+    return "Admins can add and manage properties from the Admin Panel. Register as an admin, then go to Admin → Add Property to create a listing with all details.";
+  if (q.includes("hello") || q.includes("hi") || q.includes("hey"))
+    return "Hello! 👋 How can I help you today? I can assist with property search, pricing, EMI calculations, or account setup.";
+  if (q.includes("thank"))
+    return "You're welcome! Feel free to ask if you need anything else. Happy house hunting! 🏠";
+  return "I can help you with property search, pricing info, EMI calculation, contacting agents, and account setup. Could you be more specific about what you need?";
+}
+
 export default function ChatPanel() {
   const { chatOpen, toggleChat } = useUIStore();
-  const [messages, setMessages] = useState<ChatMessage[]>(mockChatMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>([welcomeMsg]);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -32,17 +59,18 @@ export default function ChatPanel() {
       timestamp: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, userMsg]);
+    const userInput = input;
     setInput("");
 
     setTimeout(() => {
       const botMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
-        sender: "agent",
-        text: "Thanks for your message! I'll look into that and get back to you shortly. In the meantime, would you like to schedule a holographic property tour?",
+        sender: "bot",
+        text: getBotResponse(userInput),
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, botMsg]);
-    }, 1200);
+    }, 800);
   };
 
   return (

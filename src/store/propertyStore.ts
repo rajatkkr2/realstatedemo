@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { mockProperties } from "@/utils/mockData";
 
 export interface Property {
   _id: string;
@@ -7,8 +6,11 @@ export interface Property {
   description: string;
   price: number;
   location: string;
+  address: string;
   city: string;
   state: string;
+  pincode: string;
+  area: string;
   country: string;
   propertyType: string;
   bhk: number;
@@ -22,10 +24,13 @@ export interface Property {
   images: string[];
   videos: string[];
   agent: string;
+  agentName: string;
   featured: boolean;
   views: number;
   likes: number;
   coordinates: { lat: number; lng: number };
+  contactPhone: string;
+  contactEmail: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -33,6 +38,9 @@ export interface Property {
 interface Filters {
   search: string;
   city: string;
+  state: string;
+  pincode: string;
+  area: string;
   propertyType: string;
   minPrice: number;
   maxPrice: number;
@@ -52,14 +60,14 @@ interface PropertyState {
   applyFilters: () => void;
   selectProperty: (property: Property | null) => void;
   toggleWishlist: (id: string) => void;
-  resetDemoData: () => void;
 }
-
-const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
 const defaultFilters: Filters = {
   search: "",
   city: "",
+  state: "",
+  pincode: "",
+  area: "",
   propertyType: "",
   minPrice: 0,
   maxPrice: 100000000,
@@ -77,17 +85,13 @@ export const usePropertyStore = create<PropertyState>((set, get) => ({
 
   fetchProperties: async () => {
     set({ isLoading: true });
-    if (isDemo) {
-      await new Promise((r) => setTimeout(r, 600));
-      set({ properties: mockProperties as Property[], filteredProperties: mockProperties as Property[], isLoading: false });
-      return;
-    }
     try {
       const res = await fetch("/api/properties");
       const data = await res.json();
-      set({ properties: data, filteredProperties: data, isLoading: false });
+      const list = Array.isArray(data) ? data : [];
+      set({ properties: list, filteredProperties: list, isLoading: false });
     } catch {
-      set({ isLoading: false });
+      set({ properties: [], filteredProperties: [], isLoading: false });
     }
   },
 
@@ -106,10 +110,16 @@ export const usePropertyStore = create<PropertyState>((set, get) => ({
         (p) =>
           p.title.toLowerCase().includes(q) ||
           p.location.toLowerCase().includes(q) ||
-          p.city.toLowerCase().includes(q)
+          p.city.toLowerCase().includes(q) ||
+          p.state.toLowerCase().includes(q) ||
+          (p.pincode && p.pincode.includes(q)) ||
+          (p.area && p.area.toLowerCase().includes(q))
       );
     }
-    if (filters.city) result = result.filter((p) => p.city === filters.city);
+    if (filters.city) result = result.filter((p) => p.city.toLowerCase() === filters.city.toLowerCase());
+    if (filters.state) result = result.filter((p) => p.state.toLowerCase() === filters.state.toLowerCase());
+    if (filters.pincode) result = result.filter((p) => p.pincode === filters.pincode);
+    if (filters.area) result = result.filter((p) => p.area?.toLowerCase() === filters.area.toLowerCase());
     if (filters.propertyType) result = result.filter((p) => p.propertyType === filters.propertyType);
     if (filters.bhk) result = result.filter((p) => p.bhk === filters.bhk);
     if (filters.status) result = result.filter((p) => p.status === filters.status);
@@ -126,14 +136,5 @@ export const usePropertyStore = create<PropertyState>((set, get) => ({
         ? state.wishlist.filter((w) => w !== id)
         : [...state.wishlist, id],
     }));
-  },
-
-  resetDemoData: () => {
-    set({
-      properties: mockProperties as Property[],
-      filteredProperties: mockProperties as Property[],
-      filters: defaultFilters,
-      wishlist: [],
-    });
   },
 }));

@@ -18,7 +18,6 @@ import PropertyCard from "@/components/PropertyCard";
 import GlassCard from "@/components/GlassCard";
 import NeonButton from "@/components/NeonButton";
 import { usePropertyStore } from "@/store/propertyStore";
-import { isDemo } from "@/utils/isDemo";
 
 const stats = [
   { label: "Properties Listed", value: "12,400+", icon: Building2, color: "var(--neon-cyan)" },
@@ -65,7 +64,7 @@ export default function Home() {
             >
               <Sparkles size={14} className="text-[var(--neon-cyan)]" />
               <span className="text-xs font-medium tracking-widest text-[var(--neon-cyan)]">
-                {isDemo ? "DEMO MODE ACTIVE" : "WELCOME TO THE FUTURE"}
+                WELCOME TO THE FUTURE
               </span>
             </motion.div>
 

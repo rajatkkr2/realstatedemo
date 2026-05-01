@@ -7,7 +7,6 @@ import PropertyCard from "@/components/PropertyCard";
 import SearchFilters from "@/components/SearchFilters";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { usePropertyStore } from "@/store/propertyStore";
-import { isDemo } from "@/utils/isDemo";
 
 export default function PropertiesPage() {
   const { filteredProperties, fetchProperties, isLoading, properties } = usePropertyStore();
@@ -17,7 +16,7 @@ export default function PropertiesPage() {
   }, [properties.length, fetchProperties]);
 
   return (
-    <div className="min-h-screen px-4 pt-24 pb-12" style={{ marginTop: isDemo ? "36px" : "0" }}>
+    <div className="min-h-screen px-4 pt-24 pb-12">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

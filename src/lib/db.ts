@@ -19,10 +19,6 @@ if (!global.mongooseCache) {
 }
 
 export async function connectDB() {
-  if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
-    return null;
-  }
-
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {

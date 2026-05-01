@@ -1,20 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./Navbar";
-import DemoBanner from "./DemoBanner";
 import ChatPanel from "./ChatPanel";
 import NotificationPanel from "./NotificationPanel";
 import FloatingActionButton from "./FloatingActionButton";
+import { useAuthStore } from "@/store/authStore";
 
 const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
+  const { loadFromStorage } = useAuthStore();
+
+  useEffect(() => {
+    loadFromStorage();
+  }, [loadFromStorage]);
+
   return (
     <>
       <ParticleField />
-      <DemoBanner />
       <Navbar />
       <main className="relative z-10 flex-1">{children}</main>
       <ChatPanel />
