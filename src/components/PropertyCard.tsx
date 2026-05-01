@@ -43,13 +43,15 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
     >
       <Link href={`/properties/${property._id}`}>
         <div className="relative h-56 overflow-hidden">
-          <GyroscopeImage
-            src={property.images[0] || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"}
-            alt={property.title}
-            className="h-56 w-full"
-            intensity={5}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          <div className="card-img-zoom">
+            <GyroscopeImage
+              src={property.images[0] || "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"}
+              alt={property.title}
+              className="h-56 w-full"
+              intensity={5}
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent transition-opacity duration-300 group-hover:from-black/60" />
 
           <div className="absolute top-3 left-3 flex gap-2">
             <span

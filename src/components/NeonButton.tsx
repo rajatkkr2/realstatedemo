@@ -61,7 +61,7 @@ export default function NeonButton({
       disabled={disabled}
       whileHover={disabled ? {} : { y: -2 }}
       whileTap={disabled ? {} : { scale: 0.97 }}
-      className={`relative rounded-xl font-semibold tracking-wide transition-all duration-300 ${sizes[size]} ${className} ${
+      className={`relative rounded-xl font-semibold tracking-wide transition-all duration-300 btn-shine ${sizes[size]} ${className} ${
         disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
       }`}
       style={{
