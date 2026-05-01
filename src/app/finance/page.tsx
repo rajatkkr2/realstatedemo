@@ -199,7 +199,7 @@ export default function FinancePage() {
                         fontSize: "12px",
                         color: "#e0e0ff",
                       }}
-                      formatter={(value: number) => formatPrice(value)}
+                      formatter={(value) => formatPrice(Number(value))}
                     />
                     <Area type="monotone" dataKey="principal" stroke="#00f0ff" fill="url(#principalGrad)" strokeWidth={2} name="Principal" />
                     <Area type="monotone" dataKey="interest" stroke="#ff00aa" fill="url(#interestGrad)" strokeWidth={2} name="Interest" />
