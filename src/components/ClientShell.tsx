@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./Navbar";
@@ -14,6 +14,18 @@ const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const [leadFormOpen, setLeadFormOpen] = useState(false);
+
+  /* Auto-open lead form after 5 seconds on first visit */
+  useEffect(() => {
+    const hasShown = sessionStorage.getItem("leadFormShown");
+    if (!hasShown) {
+      const timer = setTimeout(() => {
+        setLeadFormOpen(true);
+        sessionStorage.setItem("leadFormShown", "true");
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <>

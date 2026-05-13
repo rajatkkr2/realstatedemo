@@ -16,7 +16,7 @@ export default function FloatingActionButton() {
       const timer = setTimeout(() => {
         toggleChat();
         sessionStorage.setItem("chatAutoOpened", "true");
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
