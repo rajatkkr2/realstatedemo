@@ -18,9 +18,9 @@ const formatPrice = (price: number) => {
 };
 
 const statusColors: Record<string, { bg: string; text: string }> = {
-  Available: { bg: "rgba(46,125,91,0.1)", text: "var(--accent-green)" },
-  Sold: { bg: "rgba(192,57,43,0.1)", text: "var(--accent-red)" },
-  Draft: { bg: "rgba(74,74,106,0.1)", text: "var(--navy-muted)" },
+  Available: { bg: "#2E7D5B", text: "#FFFFFF" },
+  Sold: { bg: "#C0392B", text: "#FFFFFF" },
+  Draft: { bg: "rgba(74,74,106,0.8)", text: "#FFFFFF" },
 };
 
 export default function PropertyCard({ property, index = 0 }: PropertyCardProps) {
@@ -55,17 +55,17 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
 
           <div className="absolute top-3 left-3 flex gap-2">
             <span
-              className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider backdrop-blur-sm"
-              style={{ background: sc.bg, color: sc.text, border: `1px solid ${sc.text}30` }}
+              className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider shadow-sm"
+              style={{ background: sc.bg, color: sc.text }}
             >
               {property.status.toUpperCase()}
             </span>
             {property.featured && (
               <span
-                className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider backdrop-blur-sm"
-                style={{ background: "rgba(200,164,92,0.15)", color: "var(--royal-gold-dark)", border: "1px solid rgba(200,164,92,0.3)" }}
+                className="rounded-full px-3 py-1 text-[10px] font-bold tracking-wider shadow-sm"
+                style={{ background: "#C8A45C", color: "#FFFFFF" }}
               >
-                FEATURED
+                ★ FEATURED
               </span>
             )}
           </div>

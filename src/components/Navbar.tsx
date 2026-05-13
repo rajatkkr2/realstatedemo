@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Shield,
+  Phone,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useUIStore } from "@/store/uiStore";
@@ -26,7 +27,11 @@ const navLinks = [
   { href: "/finance", label: "Finance", icon: Calculator },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+  onOpenLeadForm?: () => void;
+}
+
+export default function Navbar({ onOpenLeadForm }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -89,6 +94,22 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          {onOpenLeadForm && (
+            <motion.button
+              whileHover={{ scale: 1.05, y: -1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onOpenLeadForm}
+              className="hidden sm:flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold text-white transition-all duration-200 btn-shine"
+              style={{
+                background: "linear-gradient(135deg, #2E7D5B, #236B4A)",
+                boxShadow: "0 2px 10px rgba(46,125,91,0.25)",
+              }}
+            >
+              <Phone size={13} />
+              Get a Callback
+            </motion.button>
+          )}
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
