@@ -7,13 +7,13 @@ import {
   Building2,
   ArrowRight,
   MapPin,
-  BedDouble,
   TrendingUp,
-  Shield,
   Search,
   Home as HomeIcon,
   Star,
   ChevronDown,
+  BadgeCheck,
+  IndianRupee,
 } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
 import GlassCard from "@/components/GlassCard";
@@ -31,8 +31,8 @@ const stats = [
 const features = [
   { title: "Smart Search", description: "Find your perfect home with intelligent filters — search by city, area, budget, and lifestyle preferences.", icon: Search, color: "var(--royal-gold)" },
   { title: "Virtual Tours", description: "Explore properties from the comfort of your home with immersive visual walkthroughs and detailed galleries.", icon: Star, color: "var(--accent-blue)" },
-  { title: "Verified Listings", description: "Every property is verified for authenticity. Transparent pricing with no hidden charges.", icon: Shield, color: "var(--accent-green)" },
-  { title: "Quick Finance", description: "Instantly calculate EMIs, compare loan options, and get pre-approved with our finance tools.", icon: BedDouble, color: "var(--royal-gold-dark)" },
+  { title: "Verified Listings", description: "Every property is verified for authenticity. Transparent pricing with no hidden charges.", icon: BadgeCheck, color: "var(--accent-green)" },
+  { title: "Quick Finance", description: "Instantly calculate EMIs, compare loan options, and get pre-approved with our finance tools.", icon: IndianRupee, color: "var(--royal-gold-dark)" },
 ];
 
 /* Animated counter hook */
@@ -254,14 +254,14 @@ export default function Home() {
       </section>
 
       {/* Featured Properties */}
-      <section className="relative px-4 py-24" style={{ background: "var(--cream)" }}>
+      <section className="relative px-4 py-32" style={{ background: "var(--cream)" }}>
         <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7 }}
-            className="mb-12 flex items-end justify-between"
+            className="mb-16 flex items-end justify-between"
           >
             <div>
               <motion.p
@@ -320,7 +320,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="relative px-4 py-24 overflow-hidden">
+      <section className="relative px-4 py-32 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(200,164,92,0.06) 0%, transparent 70%)" }} />
         <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(44,95,138,0.04) 0%, transparent 70%)" }} />
@@ -331,7 +331,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="mb-16 text-center"
+            className="mb-20 text-center"
           >
             <motion.p
               className="mb-2 text-xs font-medium tracking-[0.3em]"
@@ -354,7 +354,7 @@ export default function Home() {
             />
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, i) => (
               <motion.div
                 key={feature.title}
@@ -363,17 +363,17 @@ export default function Home() {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
               >
-                <GlassCard className="p-6 h-full hover-lift group">
+                <GlassCard className="px-7 py-8 h-full hover-lift group">
                   <motion.div
-                    className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl"
-                    style={{ background: "var(--cream)", color: feature.color }}
+                    className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl"
+                    style={{ background: `${feature.color}12`, color: feature.color, border: `1.5px solid ${feature.color}25` }}
                     whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <feature.icon size={26} />
+                    <feature.icon size={28} strokeWidth={2} />
                   </motion.div>
-                  <h3 className="mb-2 text-lg font-semibold hover-underline inline-block" style={{ color: "var(--navy)" }}>{feature.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "var(--navy-muted)" }}>{feature.description}</p>
+                  <h3 className="mb-3 text-lg font-bold hover-underline inline-block" style={{ color: "var(--navy)" }}>{feature.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--navy-muted)", lineHeight: 1.7 }}>{feature.description}</p>
                 </GlassCard>
               </motion.div>
             ))}
@@ -382,7 +382,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="relative px-4 py-24 overflow-hidden" style={{ background: "var(--navy)" }}>
+      <section className="relative px-4 py-32 overflow-hidden" style={{ background: "var(--navy)" }}>
         {/* Animated background orbs */}
         <motion.div
           className="absolute top-10 right-10 h-64 w-64 rounded-full pointer-events-none"
