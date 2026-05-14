@@ -13,7 +13,7 @@ import {
   Star,
   ChevronDown,
   BadgeCheck,
-  IndianRupee,
+  DollarSign,
 } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
 import GlassCard from "@/components/GlassCard";
@@ -32,7 +32,7 @@ const features = [
   { title: "Smart Search", description: "Find your perfect home with intelligent filters — search by city, area, budget, and lifestyle preferences.", icon: Search, color: "var(--royal-gold)" },
   { title: "Virtual Tours", description: "Explore properties from the comfort of your home with immersive visual walkthroughs and detailed galleries.", icon: Star, color: "var(--accent-blue)" },
   { title: "Verified Listings", description: "Every property is verified for authenticity. Transparent pricing with no hidden charges.", icon: BadgeCheck, color: "var(--accent-green)" },
-  { title: "Quick Finance", description: "Instantly calculate EMIs, compare loan options, and get pre-approved with our finance tools.", icon: IndianRupee, color: "var(--royal-gold-dark)" },
+  { title: "Quick Finance", description: "Instantly calculate EMIs, compare loan options, and get pre-approved with our finance tools.", icon: DollarSign, color: "var(--royal-gold-dark)" },
 ];
 
 /* Animated counter hook */
@@ -364,15 +364,17 @@ export default function Home() {
                 transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
               >
                 <GlassCard className="px-7 py-8 h-full hover-lift group">
-                  <motion.div
-                    className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl"
-                    style={{ background: `${feature.color}12`, color: feature.color, border: `1.5px solid ${feature.color}25` }}
-                    whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <feature.icon size={28} strokeWidth={2} />
-                  </motion.div>
-                  <h3 className="mb-3 text-lg font-bold hover-underline inline-block" style={{ color: "var(--navy)" }}>{feature.title}</h3>
+                  <div className="mb-4 flex items-center gap-3">
+                    <motion.div
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                      style={{ background: `${feature.color}12`, color: feature.color, border: `1.5px solid ${feature.color}25` }}
+                      whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <feature.icon size={22} strokeWidth={2} />
+                    </motion.div>
+                    <h3 className="text-lg font-bold hover-underline" style={{ color: "var(--navy)" }}>{feature.title}</h3>
+                  </div>
                   <p className="text-sm leading-relaxed" style={{ color: "var(--navy-muted)", lineHeight: 1.7 }}>{feature.description}</p>
                 </GlassCard>
               </motion.div>
